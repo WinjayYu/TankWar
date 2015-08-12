@@ -1,0 +1,9 @@
+功能：
+  将坦克单独包装成类
+ 步骤：
+    1.建立CreateTank类
+    2.为CreatTank类添加成员变量x,y
+    3.添加draw方法，使CreateTank类独立控制自己的画法
+    4.添加CreateTank类处理按键的方法
+    5.根据CreateTanks类修改Tank类；
+    

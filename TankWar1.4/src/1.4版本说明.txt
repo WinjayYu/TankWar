@@ -1,0 +1,9 @@
+ 功能：将敌人坦克击毙（一颗子弹击中敌人坦克）
+ 步骤：
+    1.Missile中添加hitTank方法，返回布尔类型值，（CreateTank中也要添加）
+    2.碰撞检测的辅助类Rectangle
+    3.为Missile和Tank类都添加getRect方法
+    4.当击中坦克时，坦克死亡，子弹随机消失
+    5.添加控制Tank生死的量live
+    
+   
