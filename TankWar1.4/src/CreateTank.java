@@ -7,7 +7,7 @@ public class CreateTank {
 	Color co;
 	
 	public static final int XSPEED = 5;
-	public static final int YSPEED = 5;
+	public static final int YSPEED = 5;  
 	
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
@@ -211,3 +211,5 @@ public class CreateTank {
 		return new Rectangle(x, y, WIDTH,HEIGHT);
 	}
 }
+
+//hello

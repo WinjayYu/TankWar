@@ -1,6 +1,3 @@
-/*
- * 通过方向键控制坦克的移动
- */ 
 import java.awt.*;
 import java.awt.event.*;
 
