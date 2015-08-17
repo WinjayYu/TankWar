@@ -1,0 +1,6 @@
+1.改善历史版本存在的问题：在CreateTank中添加good变量，用以区分坦克的好坏。
+2.让敌方坦克变得更加智能
+       步骤：
+       1.在CreateTank类里引入java.util.*包。创建Random类产生随机数，
+       2.将（enum）Direction里面的元素转换成对应的数组
+       
