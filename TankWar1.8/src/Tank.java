@@ -12,7 +12,7 @@ public class Tank extends Frame {
 	public static final int GAME_HEIGHT = 600;
 	Image offScreenImage = null;
 
-	CreateTank myTanks = new CreateTank(50, 50, true, this);
+	CreateTank myTanks = new CreateTank(300, 300, true, this);
 	//CreateTank enemyTanks = new CreateTank(300, 300, Color.BLUE, this);
 	
 	List<Missile> missiles = new ArrayList<Missile>();//注意小括号不要写掉
@@ -31,7 +31,7 @@ public class Tank extends Frame {
 		}
 
 		this.setTitle("TankWar");
-		this.setLocation(200,200);
+		this.setLocation(200,120);
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);		
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
@@ -50,10 +50,16 @@ public class Tank extends Frame {
 		g.drawString("missiles number："+ missiles.size(), 10, 40);
 		g.drawString("explode number："+ explode.size(), 10, 60);
 		g.drawString("tanks number："+ tanks.size(), 10, 80);
-
+		if(!myTanks.isLive()){
+			//Font f = g.getFont();
+			//g.setFont(new Font("", Font.BOLD, 30));
+			g.drawString("GAMEOVER!", 300, GAME_HEIGHT/2);
+			//g.setFont(f);
+		}
 		for(int i=0; i<missiles.size(); i++){
 			Missile m = missiles.get(i);
 			m.hitTanks(tanks);
+			m.hitTank(myTanks);
 			if(!m.isLive()) missiles.remove(i);
 			else m.draw(g);
 

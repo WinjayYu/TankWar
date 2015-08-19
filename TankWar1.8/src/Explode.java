@@ -37,7 +37,7 @@ public class Explode {
 		
 		Color c = g.getColor();
 		g.setColor(Color.ORANGE);
-		g.fillOval(x, y, diameter[i], diameter[i]);
+		g.fillOval(x+CreateTank.WIDTH/2, y+CreateTank.HEIGHT/2, diameter[i], diameter[i]);
 		g.setColor(c);
 		
 		i ++;

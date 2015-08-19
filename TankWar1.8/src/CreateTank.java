@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
 
 public class CreateTank {
@@ -11,26 +12,23 @@ public class CreateTank {
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
 	
-	enum Direction  {L, LU, U, RU, R, RD, D, LD, STOP};
+    enum Direction  {L, LU, U, RU, R, RD, D, LD, STOP};
 	public static boolean bL=false, bU=false, bR=false, bD=false;
 
-	Direction dir = Direction.STOP;
-	Direction barrelDir = Direction.D;
+	private Direction dir = Direction.STOP;
+	private Direction barrelDir = Direction.D;
+	
+	
+	public static Random r = new Random();
 	
 	Tank t = null;
 	Missile missile = null;
 	
 	private boolean Live = true;
-	public boolean good ;
+	private boolean good ;
 	
-	public boolean isLive() {
-		return Live;
-	}
-
-	public void setLive(boolean isLive) {
-		this.Live = isLive;
-	}
-
+	private int step = r.nextInt(13) + 5; 
+	
 	public CreateTank(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -42,6 +40,18 @@ public class CreateTank {
 		this.t = t;
 	}
 	
+	public boolean isLive() {
+		return Live;
+	}
+
+	public void setLive(boolean isLive) {
+		this.Live = isLive;
+	}
+	
+	public boolean isGood() {
+		return good;
+	}
+
 	public void draw(Graphics g ) {	
 		if(!Live) {
 			t.tanks.remove(this);
@@ -87,62 +97,132 @@ public class CreateTank {
 		move();
 	}
 	
+	/**
+	 * 
+	 */
 	public void move(){
-		
-		switch(dir) {
-		case L:
-			if(x == 0){}
-			else x -= XSPEED;
-			break;
-		case LU:
-			if(x == 0 || y == 25){}
-			else{
-				x -= XSPEED;
-				y -= YSPEED;
+		if(good) {
+			switch(dir) {
+			case L:
+				if(x == 0){}
+				else x -= XSPEED*2;
+				break;
+			case LU:
+				if(x == 0 || y == 25){}
+				else{
+					x -= XSPEED*2;
+					y -= YSPEED*2;
+				}
+				break;
+			case U:
+				if(y == 25){}
+				else
+					y -= YSPEED*2;
+				break;
+			case RU:
+				if(x == Tank.GAME_WIDTH-WIDTH || y == 25){}
+				else {
+					x += XSPEED*2;
+					y -= YSPEED*2;
+				}
+				break;
+			case R:
+				if(x == Tank.GAME_WIDTH-WIDTH){}
+				else
+					x += XSPEED*2;
+				break;
+			case RD:
+				if(x == Tank.GAME_WIDTH-WIDTH || y == Tank.GAME_HEIGHT-HEIGHT){}
+				else {
+					x += XSPEED*2;
+					y += YSPEED*2;
+				}
+				break;
+			case D:
+				if(y == Tank.GAME_HEIGHT-HEIGHT){}
+				else
+					y += YSPEED*2;
+				break;
+			case LD:
+				if(x == 0 || y == Tank.GAME_HEIGHT-HEIGHT){}
+				else {
+					x -= XSPEED*2;
+					y += YSPEED*2;
+				}
+				break;
+			case STOP:
+				break;
 			}
-			break;
-		case U:
-			if(y == 25){}
-			else
-				y -= YSPEED;
-			break;
-		case RU:
-			if(x == Tank.GAME_WIDTH-WIDTH || y == 25){}
-			else {
-				x += XSPEED;
-				y -= YSPEED;
-			}
-			break;
-		case R:
-			if(x == Tank.GAME_WIDTH-WIDTH){}
-			else
-				x += XSPEED;
-			break;
-		case RD:
-			if(x == Tank.GAME_WIDTH-WIDTH || y == Tank.GAME_HEIGHT-HEIGHT){}
-			else {
-				x += XSPEED;
-				y += YSPEED;
-			}
-			break;
-		case D:
-			if(y == Tank.GAME_HEIGHT-HEIGHT){}
-			else
-				y += YSPEED;
-			break;
-		case LD:
-			if(x == 0 || y == Tank.GAME_HEIGHT-HEIGHT){}
-			else {
-				x -= XSPEED;
-			    y += YSPEED;
-			}
-			break;
-		case STOP:
-			break;
-			}
+		}
+		else {
+			switch(dir) {
+			case L:
+				if(x == 0){}
+				else x -= XSPEED;
+				break;
+			case LU:
+				if(x == 0 || y == 25){}
+				else{
+					x -= XSPEED;
+					y -= YSPEED;
+				}
+				break;
+			case U:
+				if(y == 25){}
+				else
+					y -= YSPEED;
+				break;
+			case RU:
+				if(x == Tank.GAME_WIDTH-WIDTH || y == 25){}
+				else {
+					x += XSPEED;
+					y -= YSPEED;
+				}
+				break;
+			case R:
+				if(x == Tank.GAME_WIDTH-WIDTH){}
+				else
+					x += XSPEED;
+				break;
+			case RD:
+				if(x == Tank.GAME_WIDTH-WIDTH || y == Tank.GAME_HEIGHT-HEIGHT){}
+				else {
+					x += XSPEED;
+					y += YSPEED;
+				}
+				break;
+			case D:
+				if(y == Tank.GAME_HEIGHT-HEIGHT){}
+				else
+					y += YSPEED;
+				break;
+			case LD:
+				if(x == 0 || y == Tank.GAME_HEIGHT-HEIGHT){}
+				else {
+					x -= XSPEED;
+				    y += YSPEED;
+				}
+				break;
+			case STOP:
+				break;
+				}
+		}
 		
 		if(dir != Direction.STOP)
 			barrelDir = dir;
+
+		if(!good) {
+			Direction dirs [] = Direction.values();
+			if(step == 0) {
+				step = r.nextInt(15) + 5;
+				int i = r.nextInt(dirs.length);
+				dir = dirs[i];
+			}
+			step --;
+			if(r.nextInt(30) > 28) {
+				fire();
+			}
+		}
 		/*
 		if(x < 0) x = 0;
 		if(y < 25) y = 25;
@@ -207,11 +287,14 @@ public class CreateTank {
 	}
 
 	public Missile fire() {
-		int x = this.x + CreateTank.WIDTH/2 -Missile.WIDTH/2;
-		int y = this.y + CreateTank.HEIGHT/2 - Missile.HEIGHT/2;
-		missile = new Missile(x, y, barrelDir, t);
-		t.missiles.add(missile);
-		return missile;
+		if(isLive()){
+			int x = this.x + CreateTank.WIDTH/2 -Missile.WIDTH/2;
+			int y = this.y + CreateTank.HEIGHT/2 - Missile.HEIGHT/2;
+			missile = new Missile(x, y, barrelDir, good, t);
+			t.missiles.add(missile);
+			return missile;
+		}
+		return null;
 	}
 	
 	public Rectangle getRect() {
