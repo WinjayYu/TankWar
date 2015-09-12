@@ -59,6 +59,9 @@ public class Tank extends Frame {
 			g.drawString("GAMEOVER!", 300, GAME_HEIGHT/2);
 			//g.setFont(f);
 		}
+		if(tanks.size() == 0) {
+			g.drawString("YOUWIN!", 300, GAME_HEIGHT/2);
+		}
 		for(int i=0; i<missiles.size(); i++){
 			Missile m = missiles.get(i);
 			m.hitTanks(tanks);
@@ -78,10 +81,16 @@ public class Tank extends Frame {
 		}
 		
 		for(int i=0; i<tanks.size(); i++) {
-			CreateTank c = tanks.get(i);
-			c.draw(g);
+			CreateTank ct = tanks.get(i);
+			ct.collidesWithWall(w1);
+			ct.collidesWithWall(w2);
+			ct.clooidesWithTanks(tanks);
+			ct.collidesWithTank(myTanks);
+			ct.draw(g);
 		}
 		myTanks.draw(g);
+		myTanks.collidesWithWall(w1);
+		myTanks.collidesWithWall(w2);
 		
 		w1.draw(g);
 		w2.draw(g);

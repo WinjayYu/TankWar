@@ -24,10 +24,12 @@ public class CreateTank {
 	Tank t = null;
 	Missile missile = null;
 	
-	private boolean Live = true;
+	private boolean live = true;
 	private boolean good ;
 	
 	private int step = r.nextInt(13) + 5; 
+	
+	int oldX, oldY;
 	
 	public CreateTank(int x, int y) {
 		this.x = x;
@@ -41,11 +43,11 @@ public class CreateTank {
 	}
 	
 	public boolean isLive() {
-		return Live;
+		return live;
 	}
 
 	public void setLive(boolean isLive) {
-		this.Live = isLive;
+		this.live = isLive;
 	}
 	
 	public boolean isGood() {
@@ -53,7 +55,7 @@ public class CreateTank {
 	}
 
 	public void draw(Graphics g ) {	
-		if(!Live) {
+		if(!live) {
 			t.tanks.remove(this);
 			return;
 		}
@@ -96,14 +98,11 @@ public class CreateTank {
 		
 		move();
 	}
-	
-	/**
-	 * 
-	 */
-	public void move(){
-		
-		int x1 = this.x,  y1 = this.y;
 
+	public void move(){
+		oldX = x;
+		oldY = y;
+		
 		if(good) {
 			switch(dir) {
 			case L:
@@ -156,11 +155,6 @@ public class CreateTank {
 			case STOP:
 				break;
 			}
-			
-			/*if(impactsWithWall(t.w1) || impactsWithWall(t.w2)) {
-				this.x = x1;
-				this.y = y1;
-			}*/
 		}
 		else {
 			switch(dir) {
@@ -213,12 +207,7 @@ public class CreateTank {
 				break;
 			case STOP:
 				break;
-				}
-
-			if(impactsWithWall(t.w1) || impactsWithWall(t.w2)) {
-				this.x = x1;
-				this.y = y1;
-			}
+				}	
 		}
 		
 		if(dir != Direction.STOP)
@@ -244,11 +233,16 @@ public class CreateTank {
 		*/   //马老师解决坦克出界问题的方法
 	}
 	
+	private void stay(){		
+			x = oldX;
+			y = oldY;
+	}
+	
 	public void keyPressed (KeyEvent e){
 		int key = e.getKeyCode();
 		
 		switch(key) {
-		case KeyEvent.VK_F :
+		case KeyEvent.VK_CONTROL :
 			fire();
 			break;
 		case KeyEvent.VK_LEFT :
@@ -310,10 +304,31 @@ public class CreateTank {
 		return null;
 	}
 	
-	public boolean impactsWithWall(Wall w) {
+	public boolean collidesWithWall(Wall w) {
 		if(this.isLive() && this.getRect().intersects(w.getRect())) {
-			this.dir = Direction.STOP;
+			stay();
 			return true;
+		}
+		return false;
+	}
+	
+	public boolean collidesWithTank(CreateTank ct) {
+		if(this.live && ct.isLive() && this.getRect().intersects(ct.getRect())) {
+			this.stay();
+			ct.stay();
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean clooidesWithTanks(java.util.List<CreateTank> tanks) {
+		for(int i=0; i<tanks.size(); i++) {
+			CreateTank ct = tanks.get(i);
+			if(this != ct) {
+				if(collidesWithTank(ct)) {
+					return true;
+			}
+			}
 		}
 		return false;
 	}
