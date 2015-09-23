@@ -12,7 +12,6 @@ public class CreateTank {
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
 	
-    enum Direction  {L, LU, U, RU, R, RD, D, LD, STOP};
 	public static boolean bL=false, bU=false, bR=false, bD=false;
 
 	private Direction dir = Direction.STOP;
@@ -32,6 +31,21 @@ public class CreateTank {
 	
 	int oldX, oldY;
 	private int life = 100;
+	
+	//Blood b = new Blood();
+	
+	private static Toolkit tk = Toolkit.getDefaultToolkit();
+	private static Image[] images = { 
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankL.gif")),
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankLU.gif")),
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankU.gif")),
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankRU.gif")),
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankR.gif")),
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankRD.gif")),
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankD.gif")),
+			tk.getImage(CreateTank.class.getClassLoader().getResource("images/tankLD.gif"))
+	};
+
 
 	public CreateTank(int x, int y) {
 		this.x = x;
@@ -61,7 +75,7 @@ public class CreateTank {
 			t.tanks.remove(this);
 			return;
 		}
-		Color c = g.getColor();//拿到前景色
+		/*Color c = g.getColor();//拿到前景色
 		if(good) {
 			g.setColor(Color.RED);
 			bb.draw(g);
@@ -70,36 +84,40 @@ public class CreateTank {
 			g.setColor(Color.BLUE);
 		}
 		g.fillOval(x,y,WIDTH,HEIGHT);//画一个实心圆并用当前颜色填充
-		g.setColor(c);
+		g.setColor(Color.WHITE);*/
+		
+		if(good) bb.draw(g);
 		
 		switch(barrelDir) {
 		case L:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x, y + CreateTank.HEIGHT/2);
+			g.drawImage(images[0], x, y, null);
 			break;
 		case LU:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x, y);
+			g.drawImage(images[1], x, y, null);
 			break;
 		case U:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x + CreateTank.WIDTH/2, y);
+			g.drawImage(images[2], x, y, null);
 			break;
 		case RU:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x + CreateTank.WIDTH, y);
+			g.drawImage(images[3], x, y, null);
 			break;
 		case R:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x + CreateTank.WIDTH, y + CreateTank.HEIGHT/2);
+			g.drawImage(images[4], x, y, null);
 			break;
 		case RD:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x + CreateTank.WIDTH, y + CreateTank.HEIGHT);
+			g.drawImage(images[5], x, y, null);
 			break;
 		case D:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT);
+			g.drawImage(images[6], x, y, null);
 			break;
 		case LD:
-			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x, y + CreateTank.HEIGHT);
+			g.drawImage(images[7], x, y, null);
 			break;
 		}
+		//g.setColor(c);
 		
 		move();
+		eatBlood(t.b);
 	}
 
 	public void move(){
@@ -233,7 +251,7 @@ public class CreateTank {
 		if(y < 25) y = 25;
 		if(x > (Tank.GAME_WIDTH - WIDTH)) x = Tank.GAME_WIDTH - WIDTH;
 		if(y > (Tank.GAME_HEIGHT - HEIGHT)) y = Tank.GAME_HEIGHT - HEIGHT;
-		*/   //马老师解决坦克出界问题的方法
+		*/   //马士兵解决坦克出界问题的方法
 	}
 	
 	private void stay(){		
@@ -245,6 +263,12 @@ public class CreateTank {
 		int key = e.getKeyCode();
 		
 		switch(key) {
+		case KeyEvent.VK_F2 :
+			if(!this.live) {
+				this.live = true;
+				this.life = 100;
+			}
+			break;
 		case KeyEvent.VK_CONTROL :
 			fire();
 			break;
@@ -301,11 +325,41 @@ public class CreateTank {
 
 	public Missile fire() {
 		if(isLive()){
-			int x = this.x + CreateTank.WIDTH/2 -Missile.WIDTH/2;
-			int y = this.y + CreateTank.HEIGHT/2 - Missile.HEIGHT/2;
-			missile = new Missile(x, y, barrelDir, good, t);
-			t.missiles.add(missile);
-			return missile;
+			if(barrelDir==Direction.L || barrelDir==Direction.U || barrelDir==Direction.R || barrelDir==Direction.D) {
+				int x = this.x + 20;
+				int y = this.y + 22;
+				missile = new Missile(x, y, barrelDir, good, t);
+				t.missiles.add(missile);
+				return missile;
+			}
+			else if(barrelDir==Direction.RU) {
+				int x = this.x + 45;
+				int y = this.y + 10;
+				missile = new Missile(x, y, barrelDir, good, t);
+				t.missiles.add(missile);
+				return missile;
+			}
+			else if(barrelDir==Direction.LD) {
+				int x = this.x + 12;
+				int y = this.y + 45;
+				missile = new Missile(x, y, barrelDir, good, t);
+				t.missiles.add(missile);
+				return missile;
+			}
+			else if(barrelDir==Direction.RD) {
+				int x = this.x + 22;
+				int y = this.y + 25;
+				missile = new Missile(x, y, barrelDir, good, t);
+				t.missiles.add(missile);
+				return missile;
+			}
+            else {
+				int x = this.x + CreateTank.WIDTH / 2 - Missile.WIDTH / 2;
+				int y = this.y + CreateTank.HEIGHT / 2 - Missile.HEIGHT / 2;
+				missile = new Missile(x, y, barrelDir, good, t);
+				t.missiles.add(missile);
+				return missile;
+			}
 		}
 		return null;
 	}
@@ -314,7 +368,7 @@ public class CreateTank {
 		if(isLive()){
 			int x = this.x + CreateTank.WIDTH/2 -Missile.WIDTH/2;
 			int y = this.y + CreateTank.HEIGHT/2 - Missile.HEIGHT/2;
-			missile = new Missile(x, y, dir, good, t);
+			missile = new Missile(x+10, y+10, dir, good, t);
 			t.missiles.add(missile);
 			return missile;
 		}
@@ -358,7 +412,7 @@ public class CreateTank {
 	}
 	
 	public Rectangle getRect() {
-		return new Rectangle(x, y, WIDTH,HEIGHT);
+		return new Rectangle(x, y, images[0].getWidth(null),images[0].getWidth(null));
 	}
 	
 	
@@ -380,6 +434,16 @@ public class CreateTank {
 			g.setColor(c);
 		}
 	}
+	
+private void eatBlood(Blood b) {
+		if(good && this.live && b.live && this.getRect().intersects(b.getRect())) {
+			if(life<100) {
+				life += 20;
+				b.live = false;
+			}
+		}
+	}
+
 
 }
 

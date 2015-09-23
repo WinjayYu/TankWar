@@ -12,7 +12,6 @@ public class CreateTank {
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
 	
-    enum Direction  {L, LU, U, RU, R, RD, D, LD, STOP};
 	public static boolean bL=false, bU=false, bR=false, bD=false;
 
 	private Direction dir = Direction.STOP;
@@ -32,6 +31,8 @@ public class CreateTank {
 	
 	int oldX, oldY;
 	private int life = 100;
+	
+	//Blood b = new Blood();
 
 	public CreateTank(int x, int y) {
 		this.x = x;
@@ -70,7 +71,7 @@ public class CreateTank {
 			g.setColor(Color.BLUE);
 		}
 		g.fillOval(x,y,WIDTH,HEIGHT);//画一个实心圆并用当前颜色填充
-		g.setColor(c);
+		g.setColor(Color.WHITE);
 		
 		switch(barrelDir) {
 		case L:
@@ -98,8 +99,10 @@ public class CreateTank {
 			g.drawLine(x + CreateTank.WIDTH/2, y + CreateTank.HEIGHT/2, x, y + CreateTank.HEIGHT);
 			break;
 		}
+		g.setColor(c);
 		
 		move();
+		eatBlood(t.b);
 	}
 
 	public void move(){
@@ -245,6 +248,12 @@ public class CreateTank {
 		int key = e.getKeyCode();
 		
 		switch(key) {
+		case KeyEvent.VK_F2 :
+			if(!this.live) {
+				this.live = true;
+				this.life = 100;
+			}
+			break;
 		case KeyEvent.VK_CONTROL :
 			fire();
 			break;
@@ -380,6 +389,16 @@ public class CreateTank {
 			g.setColor(c);
 		}
 	}
+	
+private void eatBlood(Blood b) {
+		if(good && this.live && b.live && this.getRect().intersects(b.getRect())) {
+			if(life<100) {
+				life += 20;
+				b.live = false;
+			}
+		}
+	}
+
 
 }
 
